@@ -1,0 +1,19 @@
+﻿using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Vk.Base.Response;
+using Vk.Schema;
+
+namespace Vk.Operation;
+
+public record CreateAddressCommand(AddressRequest Model) : IRequest<ApiResponse<AddressResponse>>;
+public record UpdateAddressCommand(AddressRequest Model, int Id) : IRequest<ApiResponse>;
+public record DeleteAddressCommand(int Id) : IRequest<ApiResponse>;
+
+
+
+public record GetAllAddressQuery() : IRequest<ApiResponse<List<AddressResponse>>>;
+public record GetAddressByIdQuery(int Id) : IRequest<ApiResponse<AddressResponse>>;
