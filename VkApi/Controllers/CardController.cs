@@ -38,6 +38,22 @@ public class CardController : ControllerBase
         return result;
     }
 
+    [HttpGet("ByCustomerId/{customerid}")]
+    public async Task<ApiResponse<List<CardResponse>>> GetByCustomerId(int customerid)
+    {
+        var operation = new GetCardByCustomerIdQuery(customerid);
+        var result = await mediator.Send(operation);
+        return result;
+    }
+
+    [HttpGet("ByAccountId/{accountid}")]
+    public async Task<ApiResponse<CardResponse>> GetByAccountId(int accountid)
+    {
+        var operation = new GetCardByAccountIdQuery(accountid);
+        var result = await mediator.Send(operation);
+        return result;
+    }
+
     [HttpPost]
     public async Task<ApiResponse<CardResponse>> Post([FromBody] CardRequest CardRequest)
     {

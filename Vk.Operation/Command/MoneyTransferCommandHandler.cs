@@ -14,7 +14,7 @@ using System.Threading;
 namespace Vk.Operation.Command;
 
 public class MoneyTransferCommandHandler : 
-    IRequestHandler<CreateMoneyTransfer, ApiResponse<MoneyTransferResponse>>
+    IRequestHandler<CreateMoneyTransferCommand, ApiResponse<MoneyTransferResponse>>
 {
     private readonly VkDbContext dbContext;
     private readonly IMapper mapper;
@@ -25,7 +25,7 @@ public class MoneyTransferCommandHandler :
         this.mapper = mapper;
     }
 
-    public async Task<ApiResponse<MoneyTransferResponse>> Handle(CreateMoneyTransfer request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<MoneyTransferResponse>> Handle(CreateMoneyTransferCommand request, CancellationToken cancellationToken)
     {
 
         if (request.Model.FromAccountId == request.Model.ToAccountId)

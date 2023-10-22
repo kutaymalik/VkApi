@@ -17,6 +17,9 @@ namespace Vk.Data.Context
 
         public DbSet<Customer> Customers { get; set; }
 
+        // We can use Customers or Set<Customer>. This things is same. Doesn't matter.
+        // dbContext.Set<Customer>() == dbContext.Customers
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());

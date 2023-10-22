@@ -12,3 +12,5 @@ public record DeleteCardCommand(int Id) : IRequest<ApiResponse>;
 
 public record GetAllCardQuery() : IRequest<ApiResponse<List<CardResponse>>>;
 public record GetCardByIdQuery(int Id) : IRequest<ApiResponse<CardResponse>>;
+public record GetCardByCustomerIdQuery(int CustomerId) : IRequest<ApiResponse<List<CardResponse>>>;
+public record GetCardByAccountIdQuery(int AccountId) : IRequest<ApiResponse<CardResponse>>;

@@ -23,7 +23,7 @@ public class MoneyTransferController : ControllerBase
     [Authorize]
     public async Task<ApiResponse<MoneyTransferResponse>> Post([FromBody] MoneyTransferRequest request)
     {
-        var operation = new CreateMoneyTransfer(request);
+        var operation = new CreateMoneyTransferCommand(request);
 
         var result = await mediator.Send(operation);
 
@@ -33,7 +33,7 @@ public class MoneyTransferController : ControllerBase
     [HttpGet("ByReference/{referenceNumber}")]
     public async Task<ApiResponse<List<AccountTransactionResponse>>> GetByReferenceNumber(string referenceNumber)
     {
-        var operation = new GetMoneyTransferByReference(referenceNumber);
+        var operation = new GetMoneyTransferByReferenceQuery(referenceNumber);
 
         var result = await mediator.Send(operation);
 
@@ -43,7 +43,25 @@ public class MoneyTransferController : ControllerBase
     [HttpGet("ByAccountId/{accountId}")]
     public async Task<ApiResponse<List<AccountTransactionResponse>>> GetByAccountId(int accountId)
     {
-        var operation = new GetMoneyTransferByAccountId(accountId);
+        var operation = new GetMoneyTransferByAccountIdQuery(accountId);
+
+        var result = await mediator.Send(operation);
+
+        return result;
+    }
+
+    [HttpGet("ByParameter")]
+    public async Task<ApiResponse<List<AccountTransactionResponse>>> ByParameter(
+        [FromQuery] int? accountId,
+        [FromQuery] int? customerId,
+        [FromQuery] decimal? minAmount,
+        [FromQuery] decimal? maxAmount,
+        [FromQuery] DateTime? beginDate,
+        [FromQuery] DateTime? endDate,
+        [FromQuery] string? description
+        )
+    {
+        var operation = new GetMoneyTransferByParametersQuery(accountId, customerId, minAmount, maxAmount, beginDate, endDate, description);
 
         var result = await mediator.Send(operation);
 

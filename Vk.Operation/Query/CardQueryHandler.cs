@@ -11,16 +11,20 @@ namespace Vk.Operation;
 
 public class CardQueryHandler :
     IRequestHandler<GetAllCardQuery, ApiResponse<List<CardResponse>>>,
-    IRequestHandler<GetCardByIdQuery, ApiResponse<CardResponse>>
+    IRequestHandler<GetCardByIdQuery, ApiResponse<CardResponse>>,
+    IRequestHandler<GetCardByAccountIdQuery, ApiResponse<CardResponse>>,
+    IRequestHandler<GetCardByCustomerIdQuery, ApiResponse<List<CardResponse>>>
 {
 
     private readonly IUnitOfWork unitOfWork;
     private readonly IMapper mapper;
+    private readonly VkDbContext dbContext;
 
-    public CardQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public CardQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, VkDbContext dbContext)
     {
         this.unitOfWork = unitOfWork;
         this.mapper = mapper;
+        this.dbContext = dbContext;
     }
 
 
@@ -36,7 +40,7 @@ public class CardQueryHandler :
     public async Task<ApiResponse<CardResponse>> Handle(GetCardByIdQuery request, CancellationToken cancellationToken)
     {
         Card entity = await unitOfWork.CardRepository.GetByIdAsync(
-            request.Id, cancellationToken);
+            request.Id, cancellationToken, "Accounts");
 
         if (entity == null)
         {
@@ -46,5 +50,29 @@ public class CardQueryHandler :
         CardResponse mapped = mapper.Map<CardResponse>(entity);
 
         return new ApiResponse<CardResponse>(mapped);
+    }
+
+    public async Task<ApiResponse<CardResponse>> Handle(GetCardByAccountIdQuery request, CancellationToken cancellationToken)
+    {
+        Card? entity = await dbContext.Set<Card>()
+            .Include(x => x.Account)
+            .FirstOrDefaultAsync(x => x.AccountId == request.AccountId, cancellationToken);
+
+        var mapped = mapper.Map<CardResponse>(entity);
+
+        return new ApiResponse<CardResponse>(mapped);
+    }
+
+    public async Task<ApiResponse<List<CardResponse>>> Handle(GetCardByCustomerIdQuery request, CancellationToken cancellationToken)
+    {
+        List<Card> list = await dbContext.Set<Card>()
+            .Include(x => x.Account)
+            .Where(x => x.Account.CustomerId == request.CustomerId)
+            .ToListAsync(cancellationToken);
+
+
+        var mapped = mapper.Map<List<CardResponse>>(list);
+
+        return new ApiResponse<List<CardResponse>>(mapped);
     }
 }

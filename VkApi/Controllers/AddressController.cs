@@ -39,6 +39,14 @@ public class AddressController : ControllerBase
         return result;
     }
 
+    [HttpGet("ByCustomerId/{customerid}")]
+    public async Task<ApiResponse<List<AddressResponse>>> GetByCustomerId(int customerid)
+    {
+        var operation = new GetAddressByCustomerIdQuery(customerid);
+        var result = await mediator.Send(operation);
+        return result;
+    }
+
     [HttpPost]
     public async Task<ApiResponse<AddressResponse>> Post([FromBody] AddressRequest AddressRequest)
     {
